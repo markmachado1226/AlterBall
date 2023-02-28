@@ -2,6 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Game;
 
@@ -71,5 +77,20 @@ public class MyGdxGame extends Game {
 	public void declareWinner() {
 
 	};
+
+	public void loadLevel(TiledMap tm, MapObjects objs, World world) {
+		for(int x = 0; x < tm.getLayers().size(); x++) {
+			//If current layer is not a tiled layer (layer for collision boxes)
+			if(!(tm.getLayers().get(x) instanceof TiledMapTileLayer)) {
+				//Parse the objects and create the collision boxes
+				objs = tm.getLayers().get(x).getObjects();
+				for(int y = 0; y < objs.getCount(); y++) {
+					BodyDef colBox = new BodyDef();
+					colBox.type = BodyDef.BodyType.StaticBody;
+				}
+			}
+		}
+	}
+
 
 }
