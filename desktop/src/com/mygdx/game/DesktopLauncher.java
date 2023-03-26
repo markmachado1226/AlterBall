@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("Alter Ball");
 		config.setWindowedMode(1280,720);
+		config.setResizable(false);
 		config.useVsync(true);
 		new Lwjgl3Application(new MyGdxGame("AlterBall"), config);
 	}

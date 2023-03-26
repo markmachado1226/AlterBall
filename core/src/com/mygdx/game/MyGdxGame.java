@@ -1,7 +1,14 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -9,24 +16,25 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.Game;
 
+import com.badlogic.gdx.audio.Sound;
+import jdk.internal.org.jline.utils.Display;
 
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class MyGdxGame extends Game {
+public class MyGdxGame extends Game implements ContactListener {
 
 	//Pixel level width and height of game
-	public final int width = 320;
-	public final int height = 180;
+	private final int width = 320;
+	private final int height = 180;
 
 	//Tile size
-	public final int tileSize = 32;
+	private final int tileSize = 32;
 
 
 	public SpriteBatch batch;
@@ -35,7 +43,16 @@ public class MyGdxGame extends Game {
 	private final String name;//the title of the game
 	private ArrayList<Player> players;// the players of the game
 
-	public Vector<Vector2> level1OffsetsCols = new Vector();
+	public Vector<Vector2> level1OffsetsCols = new Vector(); // For offsetting the tiles manually that have been loaded from Tiled
+
+	private FreeTypeFontGenerator generator;
+	private FreeTypeFontParameter parameter;
+
+	private Color invisible = new Color(1,1,1,0);
+	private boolean fullScreen = false;
+
+	public BitmapFont font;
+	public boolean run = false;
 
 	@Override
 	public void render () {
@@ -60,6 +77,7 @@ public class MyGdxGame extends Game {
 		level1OffsetsCols.add(new Vector2(width/2 - 80,16.0f));
 		level1OffsetsCols.add(new Vector2(64,16.0f));
 		level1OffsetsCols.add(new Vector2(27.7f,4.5f));
+
 	}
 
 	/**
@@ -96,6 +114,27 @@ public class MyGdxGame extends Game {
 	public void declareWinner() {
 
 	};
+
+	public void createLevelBoundaries(World world) {
+		BodyDef colBox = new BodyDef();
+		colBox.type = BodyDef.BodyType.StaticBody;
+		Body colBoxBody = world.createBody(colBox);
+		colBoxBody.setTransform(0-16,0+height/2,0.0f);
+
+		PolygonShape polyShape = new PolygonShape();
+		polyShape.setAsBox(32/2,200/2);
+		colBoxBody.createFixture(polyShape,0.0f);
+		polyShape.dispose();
+
+		Body colBoxBody2 = world.createBody(colBox);
+		colBoxBody2.setTransform(width+17,0+height/2,0.0f);
+
+		PolygonShape polyShape2 = new PolygonShape();
+		polyShape2.setAsBox(32/2,200/2);
+		colBoxBody2.createFixture(polyShape2,0.0f);
+		polyShape2.dispose();
+
+	}
 
 	public void loadLevel(TiledMap tm, World world) {
 			//If current layer is not a tiled layer (layer for collision boxes)
@@ -138,4 +177,78 @@ public class MyGdxGame extends Game {
 
 		}
 	}
+
+	public void initFonts() {
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/RoentgenNbp-ojl0.ttf"));
+		parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+		parameter.size = 14;
+		parameter.color = Color.WHITE;
+
+		font = generator.generateFont(parameter);
+
+		font.usesIntegerPositions();
+	}
+
+
+	public void handleInput() {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+			run = true;
+			parameter.color = invisible;
+			font = generator.generateFont(parameter);
+
+			//Disable card picking ui
+
+			//Make visible the execution list order of the commands for the player ball
+
+		}
+
+		if(!fullScreen && Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+			makeFullscreen();
+		}
+
+		if(fullScreen && Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+			makeWindowed();
+		}
+
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void makeFullscreen() {
+		fullScreen = true;
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+	}
+
+	public void makeWindowed() {
+		fullScreen = false;
+		Gdx.graphics.setWindowedMode(1280,720);
+	}
+
+	@Override
+	public void beginContact(Contact contact) {
+
+	}
+
+	@Override
+	public void endContact(Contact contact) {
+
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+
+	}
+
 }

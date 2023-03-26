@@ -1,19 +1,21 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.*;
 
 public abstract class Player {
 
 
-    private String name; //the unique name for this player
+    protected String name; //the unique name for this player
 
     /**
      * A constructor that allows you to set the player's unique ID
      *
      * @param name the unique ID to assign to this player.
      */
-    public Player(String name) {
-        this.name = name;
+
+
+    public Player() {
+
     }
 
     /**
@@ -31,6 +33,7 @@ public abstract class Player {
     public void setName(String name) {
         this.name = name;
     }
+
 
     /**
      * The method to be overridden when you subclass the Player class with your specific type of Player and filled in

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -20,17 +21,14 @@ public class Level implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private World world = new World(new Vector2(0,-90),true);
 
-    TiledMap map = new TmxMapLoader().load("SampleMap.tmx");
+    private TiledMap map = new TmxMapLoader().load("SampleMap.tmx");
+    private MyGdxGame game;
+    private PlayerBall player;
 
-    MyGdxGame game;
+    private float unitScale = 1/32f;
+    private OrthogonalTiledMapRenderer mapRenderer;
 
-    BodyDef floorBodyDef;
-    BodyDef playerBodyDef;
-    float unitScale = 1/32f;
-    OrthogonalTiledMapRenderer mapRenderer;
-
-    Viewport viewport;
-
+    private Viewport viewport;
     Level (MyGdxGame game) {
 
         this.game = game;
@@ -39,35 +37,18 @@ public class Level implements Screen {
         camera.setToOrtho(false,1280f,720f);
         camera.update();
 
-        System.out.println(camera.position.y);
-
         camera.position.x = 160;
         camera.position.y = 90;
 
         viewport = new FitViewport(320,180,camera);
 
-        playerBodyDef = new BodyDef();
+        player = new PlayerBall("Ball",world);
 
-        playerBodyDef.position.set(0f,40f);
-        playerBodyDef.type = BodyDef.BodyType.DynamicBody;
-
-        Body playerBody = world.createBody(playerBodyDef);
-
-        CircleShape playerShape = new CircleShape();
-        playerShape.setRadius(10f);
-
-        FixtureDef fixtureDef = new FixtureDef();
-
-        fixtureDef.shape = playerShape;
-        fixtureDef.density = 0.0f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f;
-
-        Fixture fixture = playerBody.createFixture(fixtureDef);
-        playerShape.dispose();
+        game.initFonts();
 
         //Load level collisions
         game.loadLevel(map,world);
+        game.createLevelBoundaries(world);
 
     }
 
@@ -77,11 +58,11 @@ public class Level implements Screen {
     }
 
 
-
     @Override
     public void render(float delta) {
 
         ScreenUtils.clear(0,0,0f,1f);
+
 
         camera.update();
 
@@ -89,13 +70,38 @@ public class Level implements Screen {
 
         game.batch.begin();
 
-        world.step(1/60f,6,2);
+        game.font.draw(game.batch, "Press 'r' to run.",10,game.getHeight()-10);
+
+        if(game.run == true)
+            world.step(1/60f,6,2);
+
+        if(player.getPosition().x > 300) {
+            player.setRight(false);
+        }
+
+        if(player.getPosition().x < 25) {
+            player.setRight(true);
+        }
+
+
+        if(player.isRight() == true) {
+            player.applyForce(-20.0f);
+        } else {
+            player.applyForce(20.0f);
+        }
+
+
+
 
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-        debugRenderer.render(world, camera.combined);
+        game.handleInput();
+
         game.batch.end();
+
+        debugRenderer.render(world, camera.combined);
+
 
     }
 
