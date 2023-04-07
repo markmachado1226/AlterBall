@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -15,8 +16,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Level implements Screen {
 
-
-
     private OrthographicCamera camera = new OrthographicCamera();
     private Box2DDebugRenderer debugRenderer;
     private World world = new World(new Vector2(0,-90),true);
@@ -29,6 +28,10 @@ public class Level implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
 
     private Viewport viewport;
+
+    private ColourCard colourCard;
+    private Texture testTexture;
+
     Level (MyGdxGame game) {
 
         this.game = game;
@@ -43,8 +46,11 @@ public class Level implements Screen {
         viewport = new FitViewport(320,180,camera);
 
         player = new PlayerBall("Ball",world);
+        game.addPlayer(player);
 
         game.initFonts();
+
+        colourCard = new ColourCard(320/2, 0);
 
         //Load level collisions
         game.loadLevel(map,world);
@@ -67,8 +73,11 @@ public class Level implements Screen {
         camera.update();
 
         game.batch.setProjectionMatrix(camera.combined);
+        colourCard.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
+
+
 
         game.font.draw(game.batch, "Press 'r' to run.",10,game.getHeight()-10);
 
@@ -90,15 +99,17 @@ public class Level implements Screen {
             player.applyForce(20.0f);
         }
 
-
-
-
         mapRenderer.setView(camera);
         mapRenderer.render();
 
         game.handleInput();
 
+        colourCard.renderCard(game);
+        colourCard.handleInput(camera);
+
         game.batch.end();
+
+        colourCard.renderBoundingBox();
 
         debugRenderer.render(world, camera.combined);
 

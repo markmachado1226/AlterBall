@@ -2,28 +2,22 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.Game;
 
-import com.badlogic.gdx.audio.Sound;
-import jdk.internal.org.jline.utils.Display;
-
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -33,12 +27,8 @@ public class MyGdxGame extends Game implements ContactListener {
 	private final int width = 320;
 	private final int height = 180;
 
-	//Tile size
-	private final int tileSize = 32;
-
-
 	public SpriteBatch batch;
-	public Texture img;
+	private Texture img;
 
 	private final String name;//the title of the game
 	private ArrayList<Player> players;// the players of the game
@@ -53,7 +43,6 @@ public class MyGdxGame extends Game implements ContactListener {
 
 	public BitmapFont font;
 	public boolean run = false;
-
 	@Override
 	public void render () {
 		super.render();
@@ -174,7 +163,6 @@ public class MyGdxGame extends Game implements ContactListener {
 			polyShape.setAsBox(rectangle.getWidth()/2f, rectangle.getHeight()/2f);
 			colBoxBody.createFixture(polyShape,0.0f);
 			polyShape.dispose();
-
 		}
 	}
 
@@ -229,6 +217,10 @@ public class MyGdxGame extends Game implements ContactListener {
 	public void makeWindowed() {
 		fullScreen = false;
 		Gdx.graphics.setWindowedMode(1280,720);
+	}
+
+	public void addPlayer(Player player) {
+		players.add(player);
 	}
 
 	@Override
