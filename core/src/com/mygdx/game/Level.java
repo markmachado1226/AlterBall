@@ -145,7 +145,6 @@ public class Level implements Screen {
 
         //debugRenderer.render(world, camera.combined);
 
-
     }
 
     @Override

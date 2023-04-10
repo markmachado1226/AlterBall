@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.awt.*;
 
-public class ColourCard extends Card implements InputProcessor {
+public class JumpCard extends Card implements InputProcessor {
 
     private boolean selected = false;
 
-    ColourCard(MyGdxGame game) {
+    JumpCard(MyGdxGame game) {
         setCard("Colour.png");
         setCardSprite(getCard());
 
@@ -32,7 +32,7 @@ public class ColourCard extends Card implements InputProcessor {
 
     }
 
-    ColourCard(int x, int y,MyGdxGame game) {
+    JumpCard(int x, int y, MyGdxGame game) {
         setCard("Colour.png");
         setCardSprite(getCard());
 
@@ -56,6 +56,6 @@ public class ColourCard extends Card implements InputProcessor {
 
     @Override
     public void playCommand() {
-
+        
     }
 }

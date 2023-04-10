@@ -410,8 +410,9 @@ public abstract class Card implements InputProcessor{
             }
         }
 
-
     }
+
+    public abstract void playCommand();
 
     public void disableCard() {
 
