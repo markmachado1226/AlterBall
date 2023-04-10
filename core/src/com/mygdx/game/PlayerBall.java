@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,13 +18,35 @@ public class PlayerBall extends Player {
     private Sprite playerSprite;
 
     private boolean right = true;
+    private float timePassed = 0.0f;
+    private float colourChangeDuration = 3; //3 seconds
+    private boolean playerPurple = false;
+
+    private float jumpForce = 5000.0f;
 
     Sound bounceSound;
 
     @Override
     public void play() {
 
-    };
+    }
+
+    @Override
+    public void update() {
+        timePassed += Gdx.graphics.getDeltaTime();
+
+        playerSprite.setOrigin(0+20/2,0+20/2);
+        playerSprite.setPosition(playerBody.getPosition().x - 20/2,playerBody.getPosition().y - 20/2);
+        playerSprite.setRotation(-playerBody.getAngle() * MathUtils.radDeg);
+    }
+
+    @Override
+    public void dispose() {
+        bounceSound.dispose();
+        playerPurple = false;
+    }
+
+    ;
 
     PlayerBall(String name, World world,String spritePath) {
         this.name = name;
@@ -54,12 +77,6 @@ public class PlayerBall extends Player {
 
     }
 
-    public void updateSpritePos() {
-        playerSprite.setOrigin(0+20/2,0+20/2);
-        playerSprite.setPosition(playerBody.getPosition().x - 20/2,playerBody.getPosition().y - 20/2);
-        playerSprite.setRotation(-playerBody.getAngle() * MathUtils.radDeg);
-    }
-
     public void renderPlayerSprite(MyGdxGame game) {
        playerSprite.draw(game.batch);
     }
@@ -80,37 +97,43 @@ public class PlayerBall extends Player {
         playerBody.setAngularVelocity(force);
     }
 
-    @Override
-    public void beginContact(Contact contact) {
-        if(contact.getFixtureA().getBody() == playerBody || contact.getFixtureB().getBody() == playerBody) {
-            if(!hasCollided) {
-                bounceSound.play();
-                hasCollided = true;
-            }
+
+    public void setPlayerBallColor(Color color,boolean hasReset) {
+        //Set the player ball color for a duration of a time
+        if(!hasReset) {
+            timePassed = 0;
         }
-
-
-
-    }
-
-    @Override
-    public void endContact(Contact contact) {
-        if(contact.getFixtureA().getBody() == playerBody || contact.getFixtureB().getBody() == playerBody) {
-            if(playerBody.getLinearVelocity().y > 2) {
-                hasCollided = false;
+            if(timePassed < colourChangeDuration) {
+                playerSprite.setColor(color);
+                playerPurple = true;
+            } else {
+                playerSprite.setColor(Color.WHITE);
+                playerPurple = false;
             }
 
+    }
+
+    public void jump(boolean finished) {
+        if(finished == false) {
+            playerBody.applyForceToCenter(400,jumpForce,true);
         }
-
     }
 
-    @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
 
+    public Body getPlayerBody() {
+        return playerBody;
     }
 
-    @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
-
+    public void setHasCollided(boolean b) {
+       hasCollided = b;
     }
+
+    public boolean getHasCollided() {
+        return hasCollided;
+    }
+
+    public boolean getIsPlayerPurple() {
+        return playerPurple;
+    }
+
 }

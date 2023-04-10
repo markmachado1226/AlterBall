@@ -1,15 +1,16 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 import java.awt.*;
 
-public class ColourCard extends Card implements InputProcessor {
+public class PurpleColourCard extends Card implements InputProcessor {
 
     private boolean selected = false;
 
-    ColourCard(MyGdxGame game) {
+    PurpleColourCard(MyGdxGame game) {
         setCard("Colour.png");
         setCardSprite(getCard());
 
@@ -28,11 +29,9 @@ public class ColourCard extends Card implements InputProcessor {
 
         setGame(game);
 
-        System.out.println(getCardNumber());
-
     }
 
-    ColourCard(int x, int y,MyGdxGame game) {
+    PurpleColourCard(int x, int y,MyGdxGame game) {
         setCard("Colour.png");
         setCardSprite(getCard());
 
@@ -50,12 +49,11 @@ public class ColourCard extends Card implements InputProcessor {
         setCardFlipSound("Sounds/cardFlip.mp3");
 
         setGame(game);
-
     }
 
-
     @Override
-    public void playCommand() {
-
+    public void playCommand(PlayerBall player) {
+        player.setPlayerBallColor(Color.PURPLE,getCommandFinished());
+        setCommandFinished(true);
     }
 }

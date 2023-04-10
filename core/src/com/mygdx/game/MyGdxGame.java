@@ -19,7 +19,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class MyGdxGame extends Game implements ContactListener {
+public class MyGdxGame extends Game  {
 
 	//Pixel level width and height of game
 	private final int width = 320;
@@ -53,6 +53,7 @@ public class MyGdxGame extends Game implements ContactListener {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		run = false;
 	}
 
 	@Override
@@ -105,11 +106,14 @@ public class MyGdxGame extends Game implements ContactListener {
 	 * When the game is over, use this method to declare and display a winning player.
 	 */
 	public void declareWinner() {
-
+		System.out.println("Player won");
+		Gdx.app.exit();
 	};
 
 	public void declareLooser() {
-
+		//Reset game for now
+		System.out.println("Player lost");
+		Gdx.app.exit();
 	}
 
 	public void createLevelBoundaries(World world) {
@@ -139,15 +143,16 @@ public class MyGdxGame extends Game implements ContactListener {
 				MapObjects col = tm.getLayers().get("Collision").getObjects();
 				MapObjects colRotated = tm.getLayers().get("CollisionRotated").getObjects();
 
-				for(int y = 0; y < col.getCount(); y++) {
-					MapObject obj = col.get(y);
-					createBoxCollisions(obj,world,y,level1OffsetsCols);
-				}
 
-			for(int y = 0; y < colRotated.getCount(); y++) {
-				MapObject obj = colRotated.get(y);
-				createBoxCollisions(obj,world,level1OffsetsCols.size()-1 + y,level1OffsetsCols);
-			}
+		for(int y = 0; y < col.getCount(); y++) {
+			MapObject obj = col.get(y);
+			createBoxCollisions(obj,world,y,level1OffsetsCols);
+		}
+
+		for(int y = 0; y < colRotated.getCount(); y++) {
+			MapObject obj = colRotated.get(y);
+			createBoxCollisions(obj,world,level1OffsetsCols.size()-1 + y,level1OffsetsCols);
+		}
 
 	}
 
@@ -172,6 +177,7 @@ public class MyGdxGame extends Game implements ContactListener {
 			colBoxBody.createFixture(polyShape,0.0f);
 			polyShape.dispose();
 		}
+
 	}
 
 	public void initFonts() {
@@ -227,26 +233,6 @@ public class MyGdxGame extends Game implements ContactListener {
 
 	public void addPlayer(Player player) {
 		players.add(player);
-	}
-
-	@Override
-	public void beginContact(Contact contact) {
-
-	}
-
-	@Override
-	public void endContact(Contact contact) {
-
-	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-
-	}
-
-	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-
 	}
 
 }

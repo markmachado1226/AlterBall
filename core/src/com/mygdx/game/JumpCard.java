@@ -10,7 +10,7 @@ public class JumpCard extends Card implements InputProcessor {
     private boolean selected = false;
 
     JumpCard(MyGdxGame game) {
-        setCard("Colour.png");
+        setCard("Jump.png");
         setCardSprite(getCard());
 
         setMousePos(new Vector3());
@@ -29,11 +29,10 @@ public class JumpCard extends Card implements InputProcessor {
         setGame(game);
 
         System.out.println(getCardNumber());
-
     }
 
     JumpCard(int x, int y, MyGdxGame game) {
-        setCard("Colour.png");
+        setCard("Jump.png");
         setCardSprite(getCard());
 
         setMousePos(new Vector3());
@@ -55,7 +54,8 @@ public class JumpCard extends Card implements InputProcessor {
 
 
     @Override
-    public void playCommand() {
-        
+    public void playCommand(PlayerBall player) {
+       player.jump(getCommandFinished());
+       setCommandFinished(true);
     }
 }

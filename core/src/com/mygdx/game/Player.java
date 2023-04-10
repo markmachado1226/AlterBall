@@ -2,7 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.physics.box2d.*;
 
-public abstract class Player implements ContactListener{
+public abstract class Player {
 
 
     protected String name; //the unique name for this player
@@ -40,5 +40,9 @@ public abstract class Player implements ContactListener{
      * with logic to play your game.
      */
     public abstract void play();
+
+    public abstract void update();
+
+    public abstract void dispose();
 
 }

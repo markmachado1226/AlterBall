@@ -136,6 +136,14 @@ public class GroupOfCards {
         }
     }
 
+    public void handleCommands(PlayerBall player) {
+       for(Card c : cards) {
+           if(c.getSeconds() <= 0) {
+               c.playCommand(player);
+           }
+       }
+    }
+
     public void renderCollectionBoundingBoxes(ShapeRenderer shapeRenderer) {
         for(Card c : cards) {
             c.renderBoundingBox(shapeRenderer);
@@ -145,6 +153,12 @@ public class GroupOfCards {
     public void handleInputs(Camera cam,MyGdxGame game,boolean simRunning) {
         for(Card c : cards) {
             c.handleInput(cam,game,simRunning);
+        }
+    }
+
+    public void disposeCards() {
+        for(Card c : cards) {
+            c.dispose();
         }
     }
 

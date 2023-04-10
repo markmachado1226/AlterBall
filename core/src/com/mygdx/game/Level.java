@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -13,8 +12,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
 
-public class Level implements Screen {
+
+public class Level implements Screen, ContactListener{
 
     private OrthographicCamera camera = new OrthographicCamera();
     private Box2DDebugRenderer debugRenderer;
@@ -29,12 +30,17 @@ public class Level implements Screen {
 
     private Viewport viewport;
 
-    private Card colourCard;
-    private Card colourCard2;
-    private Card colourCard3;
+    private Card purpleColourCard;
+    private Card jumpCard;
 
     private GroupOfCards groupOfCards;
-    private Texture testTexture;
+
+    private TriggerObject purpleHazardColBox;
+
+    private ArrayList<TriggerObject> finishTriggerObjects;
+
+    private TriggerObject finishTriggerObject;
+
 
     Level (MyGdxGame game) {
 
@@ -43,6 +49,8 @@ public class Level implements Screen {
         mapRenderer = new OrthogonalTiledMapRenderer(map,1f);
         camera.setToOrtho(false,1280f,720f);
         camera.update();
+
+        finishTriggerObjects = new ArrayList<>();
 
         camera.position.x = 160;
         camera.position.y = 90;
@@ -54,25 +62,34 @@ public class Level implements Screen {
 
         game.initFonts();
 
-        colourCard = new ColourCard(game);
-        colourCard2 = new ColourCard(game);
-        colourCard3 = new ColourCard(game);
+        purpleColourCard = new PurpleColourCard(game);
+        purpleHazardColBox = new TriggerObject(112,48,32,32,world);
+
+        finishTriggerObject = new TriggerObject(304,50,32,32,world);
+
+        purpleHazardColBox.setTarget(player);
+        jumpCard = new JumpCard(game);
 
         groupOfCards = new GroupOfCards(5);
-        groupOfCards.addCard(colourCard);
-        groupOfCards.addCard(colourCard2);
-        groupOfCards.addCard(colourCard3);
+        groupOfCards.addCard(purpleColourCard);
+        groupOfCards.addCard(jumpCard);
+        groupOfCards.shuffle();
         groupOfCards.centerCards();
+
+        finishTriggerObjects.add(finishTriggerObject);
+
 
         for(Card c : groupOfCards.getCards()) {
             game.inputMultiplexer.addProcessor(c);
         }
 
+
+
         //Load level collisions
         game.loadLevel(map,world);
         game.createLevelBoundaries(world);
 
-        world.setContactListener(player);
+        world.setContactListener(this);
 
         Gdx.input.setInputProcessor(game.inputMultiplexer);
 
@@ -99,12 +116,12 @@ public class Level implements Screen {
 
         game.font.draw(game.batch, "Press 'r' to run.",10,game.getHeight()-10);
 
-        groupOfCards.printCardNumbers();
 
         if(game.run == true) {
             world.step(1/60f,6,2);
             groupOfCards.sortCards(game);
             groupOfCards.countDown();
+            groupOfCards.handleCommands(player);
         }
 
 
@@ -131,7 +148,8 @@ public class Level implements Screen {
         groupOfCards.renderCollection(game);
         groupOfCards.handleInputs(camera,game, game.run);
 
-        player.updateSpritePos();
+
+        player.update();
         player.renderPlayerSprite(game);
 
         game.batch.end();
@@ -143,7 +161,7 @@ public class Level implements Screen {
         game.shapeRenderer.end();
          */
 
-        //debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
 
     }
 
@@ -169,6 +187,61 @@ public class Level implements Screen {
 
     @Override
     public void dispose() {
+        groupOfCards.disposeCards();
+        game.dispose();
+        player.dispose();
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        if(contact.getFixtureA().getBody() == player.getPlayerBody() || contact.getFixtureB().getBody() == player.getPlayerBody()) {
+                if(!player.getHasCollided()) {
+                    player.bounceSound.play();
+                    player.setHasCollided(true);
+                }
+        }
+
+       if(contact.getFixtureA().getBody() == player.getPlayerBody() && contact.getFixtureB().getBody() == purpleHazardColBox.getTriggerBody() || contact.getFixtureB().getBody() == player.getPlayerBody() && contact.getFixtureA().getBody() == purpleHazardColBox.getTriggerBody())  {
+            if(!player.getIsPlayerPurple()) {
+                game.declareLooser();
+            }
+
+       }
+
+        for(TriggerObject t : finishTriggerObjects) {
+            if(contact.getFixtureA().getBody() == player.getPlayerBody() && contact.getFixtureB().getBody() == t.getTriggerBody() || contact.getFixtureB().getBody() == player.getPlayerBody() && contact.getFixtureA().getBody() == t.getTriggerBody())  {
+                t.isTouched = true;
+            }
+        }
+        //Check if all finishTriggerObjects have been collided with by the player
+        int count = 0;
+        for(TriggerObject t : finishTriggerObjects) {
+            if(t.isTouched == false) {
+                count++;
+            }
+        }
+        if(!(count > 0)) {
+           game.declareWinner();
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        if(contact.getFixtureA().getBody() == player.getPlayerBody() || contact.getFixtureB().getBody() == player.getPlayerBody()) {
+            if(player.getPlayerBody().getLinearVelocity().y > 2) {
+                player.setHasCollided(false);
+            }
+
+        }
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold manifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse contactImpulse) {
 
     }
 }

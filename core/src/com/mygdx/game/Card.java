@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import java.awt.*;
@@ -47,6 +48,7 @@ public abstract class Card implements InputProcessor{
     private boolean cardFlipSoundPlayed = false;
     private Sound cardFlip;
     private boolean selected;
+    private boolean commandFinished = false;
 
     private float spriteX, spriteY;
     public float mouseX,mouseY;
@@ -69,11 +71,28 @@ public abstract class Card implements InputProcessor{
 
     private int scrolledAmount = 0;
 
+    public void setCard(String path) {
+       card = new Texture(Gdx.files.internal(path));
+    }
 
-    //Getter and setters
+    public Texture getCard() {
+        return card;
+    }
+
+    public void setCardSprite(Texture card) {
+        cardSprite = new Sprite(card);
+    }
+
+    public Sprite getCardSprite() {
+        return cardSprite;
+    }
+
+    public void setMousePos(Vector3 vec) {
+       mousePos = vec;
+    }
 
     public void setX(int x) {
-       this.x = x;
+        this.x = x;
     }
 
     public int getX() {
@@ -88,103 +107,50 @@ public abstract class Card implements InputProcessor{
         return y;
     }
 
-    public void moveSpriteX(float x) {
-       spriteX += x;
-       cardSprite.setX(x);
-    }
-
-    public float getSpriteX() {
-        return spriteX;
-    }
-
-    public void moveSpriteY(float y) {
-        spriteY += y;
-        cardSprite.setY(spriteY);
-    }
-
-    public float getSpriteY() {
-        return spriteY;
-    }
-
-    public float getMouseX() {
-        return mouseX;
-    }
-
-    public float getMouseY() {
-        return mouseY;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setCard(String path) {
-        card = new Texture(Gdx.files.internal(path));
-    }
-
-    public Texture getCard() {
-        return card;
-    }
-
-    public void setCardSprite(Texture t) {
-        cardSprite = new Sprite(t);
-    }
-
-    public Sprite getCardSprite() {
-        return cardSprite;
-    }
-
-   public void setCardFlipSound(String soundPath) {
-        cardFlip = Gdx.audio.newSound(Gdx.files.internal(soundPath));
-   }
-
-    public Sound getCardFlipSound() {
-        return cardFlip;
-    }
-
-    public void setWidth(float w) {
-        width = w;
-    }
-
-    public void setHeight(float h) {
-        height = h;
+    public void setSeconds(int s) {
+        seconds = s;
     }
 
     public int getSeconds() {
         return seconds;
     }
 
-    public void setSeconds(int s) {
-        seconds = s;
+    public boolean getSelected() {
+        return selected;
     }
 
-    public void setBoundingRectangle(Rectangle r) {
-        boundingRec = r;
+    public void setSelected(boolean b) {
+        selected = b;
     }
 
-    public Rectangle getBoundingRectangle() {
-        return boundingRec;
+    public void setBoundingRectangle(Rectangle br) {
+       boundingRec = br;
     }
 
-    public void setMousePos(Vector3 mP) {
-        mousePos = mP;
+    public void moveSpriteX(float x) {
+       spriteX += x;
+       cardSprite.setX(spriteX);
     }
 
-    public Vector3 getMousePos() {
-        return mousePos;
+
+    public void setCardFlipSound(String path) {
+       cardFlip = Gdx.audio.newSound(Gdx.files.internal(path));
     }
 
-    public boolean getCardFlipSoundPlayed() {
-        return cardFlipSoundPlayed;
+    public void setGame(MyGdxGame game) {
+       this.game = game;
     }
 
-    public void setCardFlipSoundPlayed(boolean p) {
-        cardFlipSoundPlayed = p;
+    public int getCardNumber() {
+        return cardNumber;
     }
+
+
+    public void moveSpriteY(float y) {
+        spriteY += y;
+        cardSprite.setY(spriteY);
+    }
+
 
     public void setFont(String fontPath) {
         generator = new FreeTypeFontGenerator(Gdx.files.internal(fontPath));
@@ -194,87 +160,22 @@ public abstract class Card implements InputProcessor{
         font = generator.generateFont(parameter);
     }
 
-    public BitmapFont getFont() {
-        return font;
-    }
-
-    public void setFontSize(int s) {
-        parameter.size = s;
-    }
-
-    public int getFontSize() {
-        return parameter.size;
-    }
-
-    public void setSelected(boolean b)  {
-        selected = b;
-    }
-
-    public boolean getSelected() {
-        return selected;
-    }
-
-    public void setGame(MyGdxGame game) {
-        this.game = game;
-    }
-
-    public MyGdxGame getGame() {
-        return game;
-    }
-
-    public void setFontX(float x) {
-       fontX = x;
-    }
-
-    public float getFontX() {
-        return fontX;
-    }
-
-    public void setFontY(float y) {
-        fontY = y;
-    }
-    public float getFontY() {
-        return fontY;
-    }
-
-    public int getCardNumberCounter() {
-        return cardNumberCounter;
-    }
-
-    public void incrementCardNumberCounter() {
-        cardNumberCounter++;
-    }
-
-    public void decrementCardNumberCounter() {
-        cardNumberCounter--;
-    }
-
-    public void setCardNumber() {
-        cardNumber = cardNumberCounter;
-    }
-
-
-    public int getCardNumber() {
-        return cardNumber;
-    }
-
-    public int getScrolledAmount() {
-        return scrolledAmount;
-    }
-
-    public void setScrolledAmount(int s) {
-        scrolledAmount = s;
-    }
-
-
     public void setPos(int x,int y) {
-        setX(x);
-        setY(y);
+        this.x = x;
+        this.y = y;
 
-        setBoundingRectangle(new Rectangle(getX(),getY(),getCard().getWidth(),getCard().getHeight()));
-        getCardSprite().setPosition(getX(),getY());
+        boundingRec = new Rectangle(this.x,this.y,card.getWidth(),card.getHeight());
+        cardSprite.setPosition(this.x,this.y);
     }
 
+
+    public void setCommandFinished(boolean b) {
+       commandFinished = b;
+    }
+
+    public boolean getCommandFinished() {
+        return commandFinished;
+    }
 
     @Override
     public boolean keyDown(int i) {
@@ -293,16 +194,17 @@ public abstract class Card implements InputProcessor{
 
     @Override
     public boolean touchDown(int i, int i1, int i2, int i3) {
-        if(getSelected() == false) {
-            if (getBoundingRectangle().contains(getMousePos().x, getMousePos().y)) {
+        if(selected == false) {
+            if (boundingRec.contains(mousePos.x, mousePos.y)) {
                 if(i3 == Input.Buttons.LEFT) {
-                    setCardNumber();
-                    incrementCardNumberCounter();
-                    setSeconds(scrolledAmount);
+                    cardNumber = cardNumberCounter;
+                    cardNumberCounter++;
+                    seconds = scrolledAmount;
                     moveSpriteY(-30);
-                    setFontY(getGame().getHeight() - 140f);
-                    setSelected(true);
+                    fontY = game.getHeight() - 140f;
+                    selected = true;
                 }
+
             }
         }
         return false;
@@ -310,13 +212,13 @@ public abstract class Card implements InputProcessor{
 
     @Override
     public boolean touchUp(int i, int i1, int i2, int i3) {
-        if(getSelected() == true) {
-            if (getBoundingRectangle().contains(getMousePos().x, getMousePos().y)) {
+        if(selected == true) {
+            if (boundingRec.contains(mousePos.x, mousePos.y)) {
                 if(i3 == Input.Buttons.RIGHT) {
-                    decrementCardNumberCounter();
+                    cardNumberCounter--;
                     moveSpriteY(0);
-                    setFontY(getGame().getHeight() - 110f);
-                    setSelected(false);
+                    fontY = game.getHeight() - 110f;
+                    selected = false;
                 }
 
             }
@@ -336,8 +238,8 @@ public abstract class Card implements InputProcessor{
 
     @Override
     public boolean scrolled(float v, float v1) {
-        if(getSelected() == false) {
-            if(getBoundingRectangle().contains(getMousePos().x,getMousePos().y)) {
+        if(selected == false) {
+            if(boundingRec.contains(mousePos.x,mousePos.y)) {
                 if(v1 < 0) {
                     scrolledAmount++;
                     //Clamp scrolled amount value
@@ -363,15 +265,22 @@ public abstract class Card implements InputProcessor{
         return null;
     }
 
-    public void renderCard(MyGdxGame game) {
-        getCardSprite().draw(game.batch);
-        if(selected == true) {
-            getFont().draw(game.batch, Integer.toString(getSeconds()), getX() + getFontSize(), game.getHeight() - 140);
+    public void handleCommand(PlayerBall player) {
+        if(seconds <= 0) {
+            playCommand(player);
         }
     }
 
+    public void renderCard(MyGdxGame game) {
+        cardSprite.draw(game.batch);
+        if(selected == true) {
+            font.draw(game.batch, Integer.toString(seconds), this.x + parameter.size, game.getHeight() - 140);
+        }
+
+    }
+
     public void renderBoundingBox(ShapeRenderer shapeRenderer) {
-        shapeRenderer.rect(getX(),getY(), getBoundingRectangle().width, getBoundingRectangle().height);
+        shapeRenderer.rect(this.x,this.y, boundingRec.width, boundingRec.height);
     }
 
 
@@ -379,40 +288,46 @@ public abstract class Card implements InputProcessor{
         mouseX = Gdx.input.getX();
         mouseY = Gdx.input.getY();
 
-        camera.unproject(getMousePos().set(mouseX,mouseY,0));
+        camera.unproject(mousePos.set(mouseX,mouseY,0));
 
         if(!simRunning) {
-            if(getSelected() == false) {
+            if(selected == false) {
 
-                if (getBoundingRectangle().contains(getMousePos().x, getMousePos().y)) {
-                    setFontX(getX() + getFontSize());
-                    setFontY(getGame().getHeight() - 110f);
-                    if (getCardFlipSoundPlayed() == false) {
-                        getCardFlipSound().play(1.0f, 1.5f, 0.0f);
-                        setCardFlipSoundPlayed(true);
+                if (boundingRec.contains(mousePos.x, mousePos.y)) {
+                    fontX = this.x + parameter.size;
+                    fontY = game.getHeight() - 110f;
+                    if (cardFlipSoundPlayed == false) {
+                        cardFlip.play(1.0f, 1.5f, 0.0f);
+                        cardFlipSoundPlayed = true;
                     }
                     //Move card up
-                    if (getSpriteY() < maxRaise) {
+                    if (spriteY < maxRaise) {
                         moveSpriteY(Gdx.graphics.getDeltaTime() * spriteAnimationSpeed);
                     }
 
-                    getFont().draw(getGame().batch, Integer.toString(getScrolledAmount()), getFontX(), getFontY());
+                    font.draw(game.batch, Integer.toString(scrolledAmount), fontX, fontY);
 
                 } else {
                     //Move card back down
-                    if (getSpriteY() > 0) {
+                    if (spriteY > 0) {
                         moveSpriteY(Gdx.graphics.getDeltaTime() * -spriteAnimationSpeed);
                     }
-                    setCardFlipSoundPlayed(false);
+                    cardFlipSoundPlayed = false;
                 }
             } else {
-                getFont().draw(getGame().batch, Integer.toString(getScrolledAmount()), getFontX(), getFontY());
+                font.draw(game.batch, Integer.toString(scrolledAmount), fontX, fontY);
             }
         }
-
     }
 
-    public abstract void playCommand();
+    public void dispose() {
+        generator.dispose();
+        font.dispose();
+        card.dispose();
+    }
+
+
+    public abstract void playCommand(PlayerBall player);
 
     public void disableCard() {
 
