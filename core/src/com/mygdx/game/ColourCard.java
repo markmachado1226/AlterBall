@@ -1,66 +1,18 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 
 import java.awt.*;
 
-public class ColourCard extends Card{
+public class ColourCard extends Card implements InputProcessor {
 
+    private boolean selected = false;
 
-    @Override
-    public String toString() {
-        return null;
-    }
-
-    @Override
-    public void renderCard(MyGdxGame game) {
-        getCardSprite().draw(game.batch);
-    }
-
-    @Override
-    public void renderBoundingBox() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(getX(),getY(), getBoundingRectangle().width, getBoundingRectangle().height);
-        shapeRenderer.end();
-    }
-
-    @Override
-    public void handleInput(Camera camera) {
-        mouseX = Gdx.input.getX();
-        mouseY = Gdx.input.getY();
-        camera.unproject(getMousePos().set(mouseX,mouseY,0));
-
-        if(getBoundingRectangle().contains(getMousePos().x,getMousePos().y)) {
-            System.out.println("Mouse over");
-            //Move card up
-        } else {
-            System.out.println("Mouse out");
-            //Move card back down
-        }
-    }
-
-    @Override
-    public void disableCard() {
-
-    }
-
-    @Override
-    public void setProjectionMatrix(Matrix4 camCombined) {
-        shapeRenderer.setProjectionMatrix(camCombined);
-    }
-
-    ColourCard() {
+    ColourCard(MyGdxGame game) {
         setCard("Colour.png");
-        shapeRenderer = new ShapeRenderer();
         setCardSprite(getCard());
+
         setMousePos(new Vector3());
 
         setX(0);
@@ -70,12 +22,19 @@ public class ColourCard extends Card{
 
         getCardSprite().setOrigin(0,0);
         getCardSprite().setPosition(getX(),getY());
+        setFont("fonts/RoentgenNbp-ojl0.ttf");
+
+        setCardFlipSound("Sounds/cardFlip.mp3");
+
+        setGame(game);
+
+        System.out.println(getCardNumber());
+
     }
 
-    ColourCard(int x, int y) {
+    ColourCard(int x, int y,MyGdxGame game) {
         setCard("Colour.png");
         setCardSprite(getCard());
-        shapeRenderer = new ShapeRenderer();
 
         setMousePos(new Vector3());
 
@@ -86,6 +45,13 @@ public class ColourCard extends Card{
 
         getCardSprite().setOrigin(0,0);
         getCardSprite().setPosition(getX(),getY());
+        setFont("fonts/RoentgenNbp-ojl0.ttf");
+
+        setCardFlipSound("Sounds/cardFlip.mp3");
+
+        setGame(game);
+
     }
+
 
 }

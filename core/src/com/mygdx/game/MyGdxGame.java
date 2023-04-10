@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.Game;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -28,15 +26,19 @@ public class MyGdxGame extends Game implements ContactListener {
 	private final int height = 180;
 
 	public SpriteBatch batch;
-	private Texture img;
 
 	private final String name;//the title of the game
+
 	private ArrayList<Player> players;// the players of the game
 
 	public Vector<Vector2> level1OffsetsCols = new Vector(); // For offsetting the tiles manually that have been loaded from Tiled
 
+	public InputMultiplexer inputMultiplexer;
+
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontParameter parameter;
+
+	public ShapeRenderer shapeRenderer;
 
 	private Color invisible = new Color(1,1,1,0);
 	private boolean fullScreen = false;
@@ -51,13 +53,14 @@ public class MyGdxGame extends Game implements ContactListener {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
 	}
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		this.setScreen(new Level(this));
+		shapeRenderer = new ShapeRenderer();
+		inputMultiplexer = new InputMultiplexer();
 	}
 
 	public MyGdxGame(String name) {
@@ -66,6 +69,7 @@ public class MyGdxGame extends Game implements ContactListener {
 		level1OffsetsCols.add(new Vector2(width/2 - 80,16.0f));
 		level1OffsetsCols.add(new Vector2(64,16.0f));
 		level1OffsetsCols.add(new Vector2(27.7f,4.5f));
+		inputMultiplexer = new InputMultiplexer();
 
 	}
 
@@ -103,6 +107,10 @@ public class MyGdxGame extends Game implements ContactListener {
 	public void declareWinner() {
 
 	};
+
+	public void declareLooser() {
+
+	}
 
 	public void createLevelBoundaries(World world) {
 		BodyDef colBox = new BodyDef();
@@ -178,7 +186,6 @@ public class MyGdxGame extends Game implements ContactListener {
 		font.usesIntegerPositions();
 	}
 
-
 	public void handleInput() {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 			run = true;
@@ -198,7 +205,6 @@ public class MyGdxGame extends Game implements ContactListener {
 		if(fullScreen && Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
 			makeWindowed();
 		}
-
 	}
 
 	public int getWidth() {

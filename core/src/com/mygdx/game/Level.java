@@ -1,9 +1,9 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -29,7 +29,11 @@ public class Level implements Screen {
 
     private Viewport viewport;
 
-    private ColourCard colourCard;
+    private Card colourCard;
+    private Card colourCard2;
+    private Card colourCard3;
+
+    private GroupOfCards groupOfCards;
     private Texture testTexture;
 
     Level (MyGdxGame game) {
@@ -45,16 +49,32 @@ public class Level implements Screen {
 
         viewport = new FitViewport(320,180,camera);
 
-        player = new PlayerBall("Ball",world);
+        player = new PlayerBall("Ball",world,"playerSphere.png");
         game.addPlayer(player);
 
         game.initFonts();
 
-        colourCard = new ColourCard(320/2, 0);
+        colourCard = new ColourCard(game);
+        colourCard2 = new ColourCard(game);
+        colourCard3 = new ColourCard(game);
+
+        groupOfCards = new GroupOfCards(5);
+        groupOfCards.addCard(colourCard);
+        groupOfCards.addCard(colourCard2);
+        groupOfCards.addCard(colourCard3);
+        groupOfCards.centerCards();
+
+        for(Card c : groupOfCards.getCards()) {
+            game.inputMultiplexer.addProcessor(c);
+        }
 
         //Load level collisions
         game.loadLevel(map,world);
         game.createLevelBoundaries(world);
+
+        world.setContactListener(player);
+
+        Gdx.input.setInputProcessor(game.inputMultiplexer);
 
     }
 
@@ -69,20 +89,24 @@ public class Level implements Screen {
 
         ScreenUtils.clear(0,0,0f,1f);
 
+        game.shapeRenderer.setProjectionMatrix(camera.combined);
 
         camera.update();
 
         game.batch.setProjectionMatrix(camera.combined);
-        colourCard.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
 
-
-
         game.font.draw(game.batch, "Press 'r' to run.",10,game.getHeight()-10);
 
-        if(game.run == true)
+        groupOfCards.printCardNumbers();
+
+        if(game.run == true) {
             world.step(1/60f,6,2);
+            groupOfCards.sortCards(game);
+            groupOfCards.countDown();
+        }
+
 
         if(player.getPosition().x > 300) {
             player.setRight(false);
@@ -104,14 +128,22 @@ public class Level implements Screen {
 
         game.handleInput();
 
-        colourCard.renderCard(game);
-        colourCard.handleInput(camera);
+        groupOfCards.renderCollection(game);
+        groupOfCards.handleInputs(camera,game, game.run);
+
+        player.updateSpritePos();
+        player.renderPlayerSprite(game);
 
         game.batch.end();
 
-        colourCard.renderBoundingBox();
+        /*
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        game.shapeRenderer.setColor(Color.RED);
+        groupOfCards.renderCollectionBoundingBoxes(game.shapeRenderer);
+        game.shapeRenderer.end();
+         */
 
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
 
 
     }
