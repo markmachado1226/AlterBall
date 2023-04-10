@@ -67,7 +67,6 @@ public class Level implements Screen, ContactListener{
 
         finishTriggerObject = new TriggerObject(304,50,32,32,world);
 
-        purpleHazardColBox.setTarget(player);
         jumpCard = new JumpCard(game);
 
         groupOfCards = new GroupOfCards(5);
@@ -82,8 +81,6 @@ public class Level implements Screen, ContactListener{
         for(Card c : groupOfCards.getCards()) {
             game.inputMultiplexer.addProcessor(c);
         }
-
-
 
         //Load level collisions
         game.loadLevel(map,world);
@@ -161,7 +158,7 @@ public class Level implements Screen, ContactListener{
         game.shapeRenderer.end();
          */
 
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
 
     }
 

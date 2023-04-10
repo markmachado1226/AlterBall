@@ -47,14 +47,6 @@ public class TriggerObject {
         return boundingRec;
     }
 
-    public void setTarget(PlayerBall player) {
-       this.player = player;
-    }
-
-    public PlayerBall getTarget() {
-         return player;
-    }
-
     public Body getTriggerBody() {
           return hazardBody;
     }

@@ -99,7 +99,6 @@ public class MyGdxGame extends Game  {
 	 * Play the game. This might be one method or many method calls depending on your game.
 	 */
 	public void play() {
-
 	};
 
 	/**
@@ -234,5 +233,6 @@ public class MyGdxGame extends Game  {
 	public void addPlayer(Player player) {
 		players.add(player);
 	}
+
 
 }

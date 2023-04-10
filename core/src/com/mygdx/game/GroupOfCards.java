@@ -105,6 +105,8 @@ public class GroupOfCards {
         }
     }
 
+
+    //Run timers on cards
     public void countDown() {
     timePassed += Gdx.graphics.getDeltaTime();
     for(int x = cardExecuted; x < cards.size(); x++) {
@@ -120,6 +122,7 @@ public class GroupOfCards {
     }
     }
 
+    //Checks if all cards are selected
     public boolean allCardsSelected() {
         for(Card c : cards) {
             if(c.getSelected() == false) {

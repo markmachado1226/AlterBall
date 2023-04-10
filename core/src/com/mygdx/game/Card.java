@@ -68,7 +68,6 @@ public abstract class Card implements InputProcessor{
 
     private MyGdxGame game;
 
-
     private int scrolledAmount = 0;
 
     public void setCard(String path) {
