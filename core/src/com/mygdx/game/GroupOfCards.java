@@ -117,9 +117,16 @@ public class GroupOfCards {
             if(cardExecuted < cards.size())
                 cardExecuted++;
         }
-
+    }
     }
 
+    public boolean allCardsSelected() {
+        for(Card c : cards) {
+            if(c.getSelected() == false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void renderCollection(MyGdxGame game) {

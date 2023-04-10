@@ -126,7 +126,7 @@ public class Level implements Screen {
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-        game.handleInput();
+        game.handleInput(groupOfCards);
 
         groupOfCards.renderCollection(game);
         groupOfCards.handleInputs(camera,game, game.run);

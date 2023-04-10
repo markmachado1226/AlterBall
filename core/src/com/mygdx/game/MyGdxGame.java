@@ -186,8 +186,8 @@ public class MyGdxGame extends Game implements ContactListener {
 		font.usesIntegerPositions();
 	}
 
-	public void handleInput() {
-		if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+	public void handleInput(GroupOfCards groupOfCards) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.R) && groupOfCards.allCardsSelected()) {
 			run = true;
 			parameter.color = invisible;
 			font = generator.generateFont(parameter);
