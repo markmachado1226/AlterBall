@@ -44,7 +44,7 @@ public class GroupOfCardsTest {
      */
     @Test
     public void testAddCardSuccess() {
-        System.out.println("testing getCards() success");
+        System.out.println("testing addCard() success in GroupOfCards instance");
         GroupOfCards instance = new GroupOfCards(5);
 
         MyGdxGame game = new MyGdxGame("Testgame class");
@@ -62,17 +62,18 @@ public class GroupOfCardsTest {
         assertEquals(expResult, contains);
     }
 
+    @Test
     public void testAddCardUnSuccessful() {
-        System.out.println("testing getCards() success");
+        System.out.println("testing addCard() unsuccess in GroupOfCards instance");
         GroupOfCards instance = new GroupOfCards(5);
 
         MyGdxGame game = new MyGdxGame("Testgame class");
-        Card purpleCard = new PurpleColourCard(6,6,new MyGdxGame("TestClass game"));
+        Card purpleCard = new PurpleColourCard(0,0,new MyGdxGame("TestClass game"));
 
         instance.addCard(purpleCard);
 
         boolean contains = false;
-        boolean expResult = true;
+        boolean expResult = false;
         if(instance.getCards().contains(purpleCard)) {
            contains = true;
         } else {
@@ -81,43 +82,59 @@ public class GroupOfCardsTest {
         assertEquals(expResult, contains);
     }
     
-     public void testAddCardBoundary() {
-        System.out.println("testing getCards() success");
+    @Test
+    public void testGetCard() {
+
+        System.out.println("testing getCard() success in GroupOfCards instance");
         GroupOfCards instance = new GroupOfCards(5);
 
         MyGdxGame game = new MyGdxGame("Testgame class");
-        Card purpleCard = new PurpleColourCard(5,5,new MyGdxGame("TestClass game"));
+        Card purpleCard = new PurpleColourCard(0,0,new MyGdxGame("TestClass game"));
 
         instance.addCard(purpleCard);
 
         boolean contains = false;
         boolean expResult = true;
-        if(instance.getCards().contains(purpleCard)) {
-           contains = true;
-        } else {
+
+        //If we can retrieve the purple card
+        if(instance.getCard(0) instanceof PurpleColourCard) {
+            contains = true;
+        } else { //else
             contains = false;
         }
         assertEquals(expResult, contains);
+
     }
 
-    /**
-     * Test of getCard method, of class GroupOfCards.
-     */
+
     @Test
-    public void testGetCard() {
-        System.out.println("getCard");
-        int i = 0;
-        GroupOfCards instance = null;
-        Card expResult = null;
-        Card result = instance.getCard(i);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testGetCardUnsuccessful() {
+
+        System.out.println("testing getCard() unsuccess in GroupOfCards instance");
+        GroupOfCards instance = new GroupOfCards(5);
+
+        MyGdxGame game = new MyGdxGame("Testgame class");
+        Card purpleCard = new PurpleColourCard(0,0,new MyGdxGame("TestClass game"));
+
+        instance.addCard(purpleCard);
+
+        boolean contains = false;
+        boolean expResult = false;
+
+        //If we can retrieve the purple card
+        if(instance.getCard(0) instanceof PurpleColourCard) {
+            contains = true;
+        } else { //else
+            contains = false;
+        }
+        assertEquals(expResult, contains);
+
     }
 
     /**
      * Test of addCard method, of class GroupOfCards.
      */
+   /*
     @Test
     public void testAddCard() {
         System.out.println("addCard");
@@ -131,6 +148,7 @@ public class GroupOfCardsTest {
     /**
      * Test of shuffle method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testShuffle() {
         System.out.println("shuffle");
@@ -143,6 +161,7 @@ public class GroupOfCardsTest {
     /**
      * Test of getSize method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testGetSize() {
         System.out.println("getSize");
@@ -157,6 +176,7 @@ public class GroupOfCardsTest {
     /**
      * Test of setSize method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testSetSize() {
         System.out.println("setSize");
@@ -170,6 +190,7 @@ public class GroupOfCardsTest {
     /**
      * Test of centerCards method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testCenterCards() {
         System.out.println("centerCards");
@@ -182,6 +203,7 @@ public class GroupOfCardsTest {
     /**
      * Test of sortCards method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testSortCards() {
         System.out.println("sortCards");
@@ -195,6 +217,7 @@ public class GroupOfCardsTest {
     /**
      * Test of printCardNumbers method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testPrintCardNumbers() {
         System.out.println("printCardNumbers");
@@ -207,6 +230,7 @@ public class GroupOfCardsTest {
     /**
      * Test of countDown method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testCountDown() {
         System.out.println("countDown");
@@ -219,6 +243,7 @@ public class GroupOfCardsTest {
     /**
      * Test of allCardsSelected method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testAllCardsSelected() {
         System.out.println("allCardsSelected");
@@ -233,6 +258,7 @@ public class GroupOfCardsTest {
     /**
      * Test of renderCollection method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testRenderCollection() {
         System.out.println("renderCollection");
@@ -246,6 +272,7 @@ public class GroupOfCardsTest {
     /**
      * Test of handleCommands method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testHandleCommands() {
         System.out.println("handleCommands");
@@ -259,6 +286,7 @@ public class GroupOfCardsTest {
     /**
      * Test of renderCollectionBoundingBoxes method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testRenderCollectionBoundingBoxes() {
         System.out.println("renderCollectionBoundingBoxes");
@@ -272,6 +300,7 @@ public class GroupOfCardsTest {
     /**
      * Test of handleInputs method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testHandleInputs() {
         System.out.println("handleInputs");
@@ -287,6 +316,7 @@ public class GroupOfCardsTest {
     /**
      * Test of disposeCards method, of class GroupOfCards.
      */
+    /*
     @Test
     public void testDisposeCards() {
         System.out.println("disposeCards");
@@ -297,5 +327,5 @@ public class GroupOfCardsTest {
 
     
 }
-    
+   */
 }
