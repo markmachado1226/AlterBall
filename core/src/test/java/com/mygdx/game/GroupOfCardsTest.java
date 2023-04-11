@@ -1,15 +1,12 @@
-/*
+package com.mygdx.game;/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
  */
-package test.java.com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.mygdx.game.Card;
-import com.mygdx.game.GroupOfCards;
-import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.PlayerBall;
+import com.mygdx.game.*;
+
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -46,14 +43,22 @@ public class GroupOfCardsTest {
      * Test of getCards method, of class GroupOfCards.
      */
     @Test
-    public void testGetCards() {
-        System.out.println("getCards");
-        GroupOfCards instance = null;
-        ArrayList<Card> expResult = null;
-        ArrayList<Card> result = instance.getCards();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testAddCardSuccess() {
+        System.out.println("testing getCards() success");
+        GroupOfCards instance = new GroupOfCards(5);
+
+        Card purpleCard = new PurpleColourCard(new MyGdxGame("Test game"));
+
+        instance.addCard(purpleCard);
+
+        boolean contains = false;
+        boolean expResult = true;
+        if(instance.getCards().contains(purpleCard)) {
+           contains = true;
+        } else {
+            contains = false;
+        }
+        assertEquals(expResult, contains);
     }
 
     /**
