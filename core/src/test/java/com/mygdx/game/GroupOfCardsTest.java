@@ -47,7 +47,46 @@ public class GroupOfCardsTest {
         System.out.println("testing getCards() success");
         GroupOfCards instance = new GroupOfCards(5);
 
-        Card purpleCard = new PurpleColourCard(new MyGdxGame("Test game"));
+        MyGdxGame game = new MyGdxGame("Testgame class");
+        Card purpleCard = new PurpleColourCard(0,0,new MyGdxGame("TestClass game"));
+
+        instance.addCard(purpleCard);
+
+        boolean contains = false;
+        boolean expResult = true;
+        if(instance.getCards().contains(purpleCard)) {
+           contains = true;
+        } else {
+            contains = false;
+        }
+        assertEquals(expResult, contains);
+    }
+
+    public void testAddCardUnSuccessful() {
+        System.out.println("testing getCards() success");
+        GroupOfCards instance = new GroupOfCards(5);
+
+        MyGdxGame game = new MyGdxGame("Testgame class");
+        Card purpleCard = new PurpleColourCard(6,6,new MyGdxGame("TestClass game"));
+
+        instance.addCard(purpleCard);
+
+        boolean contains = false;
+        boolean expResult = true;
+        if(instance.getCards().contains(purpleCard)) {
+           contains = true;
+        } else {
+            contains = false;
+        }
+        assertEquals(expResult, contains);
+    }
+    
+     public void testAddCardBoundary() {
+        System.out.println("testing getCards() success");
+        GroupOfCards instance = new GroupOfCards(5);
+
+        MyGdxGame game = new MyGdxGame("Testgame class");
+        Card purpleCard = new PurpleColourCard(5,5,new MyGdxGame("TestClass game"));
 
         instance.addCard(purpleCard);
 
