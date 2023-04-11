@@ -50,7 +50,12 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
 
+        // https://mvnrepository.com/artifact/junit/junit
+        testImplementation 'junit:junit:4.13.2'
+
+
     }
+
 }
 
 project(":core") {
@@ -62,8 +67,13 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
-        testImplementation 'junit:junit:4.13.1'
+          // https://mvnrepository.com/artifact/junit/junit
+        testImplementation 'junit:junit:4.13.2'
 
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
 }
